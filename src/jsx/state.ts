@@ -357,7 +357,7 @@ export function createBinding<T>(object: GObject.Object | Gio.Settings, key: str
     const subscribe: SubscribeFunction = (callback) => {
         const sig = object instanceof Gio.Settings ? "changed" : "notify"
         const id = object.connect(`${sig}::${prop}`, () => callback())
-        return () => object.disconnect(id)
+        return () => GObject.signal_handler_disconnect(object,id)
     }
 
     const get = (): T => {
@@ -458,7 +458,7 @@ export function createConnection<
                     },
                 )
 
-                return () => GObject.Object.prototype.disconnect.call(object, id)
+                return () => GObject.signal_handler_disconnect(object, id)
             })
         }
 
